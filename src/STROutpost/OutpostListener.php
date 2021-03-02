@@ -1,6 +1,6 @@
 <?php
 
-namespace benzo\STROutpost;
+namespace STROutpost;
 
 use pocketmine\event\block\BlockBreakEvent;
 use pocketmine\event\Listener;
