@@ -43,8 +43,11 @@ class Loader extends PluginBase {
 
     public function translateToVector(string $data): Position{
         $exp = explode(":", $data);
-        $world = $this->data->get("world");
-        $world = $this->getServer()->getLevelByName($world);
+        $worldName = $this->data->get("world");
+        $world = $this->getServer()->getLevelByName($worldName);
+        if (!$world instanceof \pocketmine\level\Level) {
+            throw new \InvalidArgumentException("Invalid world: " . $worldName);
+        }
         return new Position(intval($exp[0]) ?? 0, intval($exp[1]) ?? 0, intval($exp[2]) ?? 0, $world);
     }
 
@@ -75,10 +78,12 @@ class Loader extends PluginBase {
                                 return false;
                             }
                             $spawn = $this->translateToVector($this->data->get("spawn"));
-                            if($spawn !== null && $spawn instanceof Position){
+                            if($spawn instanceof Position){
                                 $sender->teleport($spawn);
+                                $sender->sendMessage(TextFormat::GREEN . "Teleported!");
+                            } else {
+                                $sender->sendMessage(TextFormat::RED . "Spawn point not set.");
                             }
-                            $sender->sendMessage(TextFormat::GREEN . "Teleported!");
                             break;
                     }
                 }
